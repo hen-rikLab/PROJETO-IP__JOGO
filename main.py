@@ -65,9 +65,6 @@ def main():
                     # pressionado, cada jogador rola 2 dados.
                     # O resultado define quem comeca.
                     if not sorteio_realizado:
-                        # A funcao ja rola 2 dados para cada jogador internamente
-                        # e retorna (indice_vencedor, rolagens) — assim nao ha
-                        # duplicidade de rolagens entre o painel e a decisao.
                         vez, rolagens = decidir_jogador_inicial(jogadores)
                         for i, jogador in enumerate(jogadores):
                             jogador.ultimo_lance = rolagens[i]
