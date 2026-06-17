@@ -15,7 +15,7 @@ from src.visual.renderizador import (  # noqa: E501
     FPS,  # taxa de quadros por segundo
     DIMENSOES_TELA,  # largura e altura da janela
     TITULO_JOGO,  # titulo da janela
-    criar_posicoes_perimetro,  # gera a ordem das casas no perimetro
+    criar_posicoes_perimetro,  # gera a ordem das casas no perimetro 
     criar_tabuleiro_exemplo,  # cria o tabuleiro com as cores das casas
     desenhar_jogadores,  # desenha os circulos dos jogadores
     desenhar_painel,  # desenha o painel inferior com mensagens
@@ -85,19 +85,57 @@ def main():
                     # (rolar_dados(1)) e avanca esse numero de casas.
                     else:
                         jogador = jogadores[vez]
+
+                        # Se o jogador caiu na casa amarela, perde a vez
+                        if getattr(jogador, "skip_turn", False):
+                            jogador.skip_turn = False
+                            vez = proximo_jogador(vez, len(jogadores))
+                            mensagem_principal = f"Vez: {jogadores[vez].nome} | Ultimo lance: {jogadores[vez].ultimo_lance}"
+                            mensagem_secundaria = f"{jogador.nome} perdeu a vez (Casa Amarela)!"
+                            continue
+
                         lance = rolar_dados(1)  # rola 1 dado (valor 1 a 6)
                         jogador.ultimo_lance = lance
                         mover_jogador(jogador, lance, len(posicoes_perimetro))
 
-                        # Atualiza o painel com o resultado da jogada
-                        mensagem_principal = f"Vez: {jogador.nome} | Ultimo lance: {lance}"
-                        mensagem_secundaria = f"{jogador.nome} tirou {lance} e foi para casa {jogador.posicao}"
+                        safe_position = max(0, min(jogador.posicao, len(posicoes_perimetro) - 1))
+                        board_index = posicoes_perimetro[safe_position]
+                        cor_casa = tabuleiro[board_index]
 
-                        # Verifica se o jogador chegou ao final do perimetro
-                        if jogador.posicao == len(posicoes_perimetro) - 1:
-                            mensagem_secundaria = f"{jogador.nome} venceu o jogo!"
+                        avancar_turno = True
+
+                        if cor_casa == "red":
+                            jogador.life -= 3
+                            mensagem_secundaria = f"{jogador.nome} tirou {lance}, caiu na VERMELHA! (-3) Vida: {jogador.life}"
+                        elif cor_casa == "green":
+                            jogador.life += 1
+                            if jogador.life > 10:
+                                jogador.life = 10
+                            mensagem_secundaria = f"{jogador.nome} tirou {lance}, caiu na VERDE! (+1) Vida: {jogador.life}"
+                        elif cor_casa == "yellow":
+                            jogador.skip_turn = True
+                            mensagem_secundaria = f"{jogador.nome} tirou {lance}, caiu na AMARELA! Fica preso."
+                        elif cor_casa == "blue":
+                            avancar_turno = False
+                            mensagem_secundaria = f"{jogador.nome} tirou {lance}, caiu na AZUL! Joga de novo!"
+                        elif cor_casa == "black":
+                            jogador.posicao = 0
+                            mensagem_secundaria = f"{jogador.nome} tirou {lance}, caiu na PRETA! Voltou ao inicio."
                         else:
-                            # Passa a vez para o proximo jogador
+                            mensagem_secundaria = f"{jogador.nome} tirou {lance} e andou em seguranca."
+
+                        mensagem_principal = f"Vez: {jogador.nome} | Ultimo lance: {lance}"
+
+                        if jogador.life <= 0:
+                            vencedor = jogadores[proximo_jogador(vez, len(jogadores))]
+                            mensagem_principal = f"{jogador.nome} morreu! VENCEDOR: {vencedor.nome}"
+                            mensagem_secundaria = f"Vida do vencedor: {vencedor.life}"
+                            rodando = False
+                        elif jogador.posicao == len(posicoes_perimetro) - 1:
+                            mensagem_principal = f"FIM DE JOGO! VENCEDOR: {jogador.nome}"
+                            mensagem_secundaria = f"Vida final: {jogador.life}"
+                            rodando = False
+                        elif avancar_turno:
                             vez = proximo_jogador(vez, len(jogadores))
                             mensagem_principal = f"Vez: {jogadores[vez].nome} | Ultimo lance: {jogadores[vez].ultimo_lance}"
                             mensagem_secundaria = f"{jogadores[vez].nome}, pressione ESPACO para rolar 1 dado"

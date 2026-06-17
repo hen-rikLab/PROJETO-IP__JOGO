@@ -8,6 +8,8 @@ class Jogador:
     - posicao: casa atual no perimetro
     - ultimo_lance: valor do ultimo dado rolado
     - rodadas_sem_jogar: quantas rodadas o jogador ficou sem jogar
+    - life: vida atual do jogador
+    - skip_turn: indica se o jogador deve pular a proxima vez
     """
     def __init__(self, nome, cor):
         self.nome = nome
@@ -15,12 +17,16 @@ class Jogador:
         self.posicao = 0
         self.ultimo_lance = 0
         self.rodadas_sem_jogar = 0
+        self.life = 10
+        self.skip_turn = False
 
     def resetar(self):
         """Volta todas as propriedades ao estado inicial."""
         self.posicao = 0
         self.ultimo_lance = 0
         self.rodadas_sem_jogar = 0
+        self.life = 10
+        self.skip_turn = False
 
 
 def rolar_dados(quantidade=2):
