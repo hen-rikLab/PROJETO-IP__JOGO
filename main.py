@@ -130,11 +130,11 @@ def main():
                             vencedor = jogadores[proximo_jogador(vez, len(jogadores))]
                             mensagem_principal = f"{jogador.nome} morreu! VENCEDOR: {vencedor.nome}"
                             mensagem_secundaria = f"Vida do vencedor: {vencedor.life}"
-                            rodando = False
+                            
                         elif jogador.posicao == len(posicoes_perimetro) - 1:
                             mensagem_principal = f"FIM DE JOGO! VENCEDOR: {jogador.nome}"
                             mensagem_secundaria = f"Vida final: {jogador.life}"
-                            rodando = False
+
                         elif avancar_turno:
                             vez = proximo_jogador(vez, len(jogadores))
                             mensagem_principal = f"Vez: {jogadores[vez].nome} | Ultimo lance: {jogadores[vez].ultimo_lance}"
