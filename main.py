@@ -1,5 +1,7 @@
 import sys
 
+from src.visual_eventos.interface_eventos import desenhar_painel_refinado, desenhar_alerta_central
+
 import pygame
 
 # Importa as classes e funcoes da logica do jogo
@@ -18,7 +20,7 @@ from src.visual.renderizador import (  # noqa: E501
     criar_posicoes_perimetro,  # gera a ordem das casas no perimetro 
     criar_tabuleiro_exemplo,  # cria o tabuleiro com as cores das casas
     desenhar_jogadores,  # desenha os circulos dos jogadores
-    desenhar_painel,  # desenha o painel inferior com mensagens
+    #desenhar_painel,  # desenha o painel inferior com mensagens
     desenhar_tabuleiro,  # desenha a grade do tabuleiro
 )
 
@@ -143,7 +145,9 @@ def main():
         # --- RENDERIZACAO ---
         desenhar_tabuleiro(tela, tabuleiro)
         desenhar_jogadores(tela, jogadores, posicoes_perimetro)
-        desenhar_painel(tela, mensagem_principal, mensagem_secundaria, fonte)
+        #desenhar_painel(tela, mensagem_principal, mensagem_secundaria, fonte)
+        desenhar_painel_refinado(tela, mensagem_principal, mensagem_secundaria, jogadores)
+        desenhar_alerta_central(tela)
 
         pygame.display.flip()
         clock.tick(FPS)
